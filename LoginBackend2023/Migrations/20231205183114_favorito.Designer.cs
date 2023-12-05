@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LoginBackend2023.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231201183752_favorito")]
+    [Migration("20231205183114_favorito")]
     partial class favorito
     {
         /// <inheritdoc />
@@ -33,10 +33,6 @@ namespace LoginBackend2023.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Link")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -45,9 +41,13 @@ namespace LoginBackend2023.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Email", "Link")
+                    b.HasIndex("UserId", "Link")
                         .IsUnique();
 
                     b.ToTable("Favoritos");

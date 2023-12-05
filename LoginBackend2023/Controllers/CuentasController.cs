@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -32,11 +34,10 @@ public class CuentasController : Controller
         _config = config;
         _signInManager = signInManager;
         _context = context;
-
     }
 
 
-    
+
 
 
     [HttpPost("registrar")]
@@ -88,7 +89,7 @@ public class CuentasController : Controller
 
         var emailClaims = HttpContext.User.Claims.Where(x => x.Type == ClaimTypes.Email).Select(x => x.Value).FirstOrDefault();
         var credencialesUsuario = new CredencialesUsuario() { Email = emailClaims };
-
+        Console.Write(emailClaims);
         return await ConstruirToken(credencialesUsuario);
     }
 
@@ -117,6 +118,11 @@ public class CuentasController : Controller
     {
         try
         {
+            var email = HttpContext.User.Claims.Where(x => x.Type == ClaimTypes.Email).Select(x => x.Value).FirstOrDefault();
+            favoritos.UserId = _userManager.Users
+                .Where(m => m.Email == email)
+    .Select(m => m.Id)
+    .SingleOrDefault();
             if (ModelState.IsValid)
             {
                 _context.Add(favoritos);
@@ -124,11 +130,24 @@ public class CuentasController : Controller
                 return Ok("Favorita Agregada");
             }
         }
-        catch (Exception ex) {
+        catch (Exception ex)
+        {
             return BadRequest("Esta noticia ya esta en tus favoritos!");
         }
 
         return null;
+    }
+
+    [HttpGet("Favorito")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> Get(string correo)
+    {
+        var userId = _userManager.Users
+       .Where(m => m.Email == correo)
+       .Select(m => m.Id)
+       .SingleOrDefault();
+
+        return Ok(userId);
 
 
     }
