@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using LoginBackend2023.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace LoginBackend2023
 {
@@ -9,6 +11,7 @@ namespace LoginBackend2023
         {
 
         }
+        public DbSet<Favoritos> Favoritos{ get; set; }
     }
        
     
